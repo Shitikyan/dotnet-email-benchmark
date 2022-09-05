@@ -1,5 +1,7 @@
 ﻿using EmailListFilter.Helper;
+using EmailListFilter.Redis;
 using EmailListFilter.Repository;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using static EmailListFilter.Helper.Logger;
 
@@ -44,7 +46,7 @@ namespace EmailListFilter.Filter
             var result = csvEmailsSet.Except(dbEmailsSet);
             watch.Stop();
 
-            BenchmarkLog(tableType, DbLength, CsvLength, watch.Elapsed);
+            BenchmarkLog(nameof(Fetching) ,tableType, DbLength, CsvLength, watch.Elapsed);
             return result;
         }
 
@@ -62,7 +64,7 @@ namespace EmailListFilter.Filter
             watch.Start();
             var result = await userRepository.GetResultEmailsRaw(emails, tableType);
             watch.Stop();
-            BenchmarkLog(tableType, DbLength, CsvLength, watch.Elapsed);
+            BenchmarkLog(nameof(InsertingWithSQL), tableType, DbLength, CsvLength, watch.Elapsed);
             return result;
         }
 
@@ -83,7 +85,41 @@ namespace EmailListFilter.Filter
             var result = csvEmailsSet.Except(dbEmailsSet);
             watch.Stop();
 
-            BenchmarkLog(tableType, CsvLength, DbLength, watch.Elapsed);
+            BenchmarkLog(nameof(IntersectionWithEF), tableType, CsvLength, DbLength, watch.Elapsed);
+            return result;
+        }
+
+        /// <summary>
+        /// Fetching all data from cash if exists otherwise from DB
+        /// </summary>
+        /// <param name="emails"></param>
+        /// <param name="tableType"></param>
+        /// <param name="userContext"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static async Task<IEnumerable<string>> FetchingCached(IEnumerable<string> emails, TableType tableType, UserRepository userRepository)
+        {
+            var watch = new Stopwatch();
+            IEnumerable<string> result;
+            watch.Start();
+            var cache = RedisConnector.Connection.GetDatabase();
+            var key = $"Fetching-{CsvLength}-{DbLength}";
+            if (cache.KeyExists(key))
+            {
+                var cachedValue = await cache.StringGetAsync(key);
+                result = JsonConvert.DeserializeObject<IEnumerable<string>>(cachedValue);
+                watch.Stop();
+            }
+            else
+            {
+                var csvEmailsSet = new HashSet<string>(emails);
+                var dbEmailsSet = await userRepository.GetEmailsFiltered(emails, tableType);
+                result = csvEmailsSet.Except(dbEmailsSet);
+                cache.StringSet(key, JsonConvert.SerializeObject(result));
+                watch.Stop();
+            }
+
+            BenchmarkLog(nameof(FetchingCached), tableType, CsvLength, DbLength, watch.Elapsed);
             return result;
         }
     }

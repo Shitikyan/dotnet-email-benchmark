@@ -15,4 +15,5 @@ This approach is worse the first one when the `n` and `m` numbers are equivalent
 Thus optimizing performance, as there is no need to get all emails from db or insert anything. Then the difference of the list and 
 this intersection is calculated again using C# `HashSet`.
 
+- `docker-compose up` for running MySQL and Redis in docker.
 - `Run All Tests` in the `Test` toolbar is for running all benchmarks provided, You can look for the results output in the `FunctionsExecutionTime` file that is directed in he `Output` folder.

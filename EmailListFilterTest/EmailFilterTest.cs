@@ -87,5 +87,31 @@ namespace EmailListFilter.Test
 
             await userContext.Database.EnsureDeletedAsync();
         }
+
+        [Theory]
+        [InlineData(CaseN1, CaseM5)]
+        [InlineData(CaseN2, CaseM1)]
+        [InlineData(CaseN2, CaseM5)]
+        [InlineData(CaseN2, CaseM2)]
+        [InlineData(CaseN2, CaseM3)]
+        [InlineData(CaseN3, CaseM3)]
+        [InlineData(CaseN3, CaseM5)]
+        [InlineData(CaseN4, CaseM3)]
+        public async void FetchingCached(int n, int m)
+        {
+            await userContext.Database.EnsureDeletedAsync();
+            await userContext.Database.MigrateAsync();
+
+            var emailsInsert = DataSeed.GetRandomEmails(m);
+
+            var userRepository = new UserRepository(userContext);
+            await userRepository.Insert(emailsInsert, TableType.Indexed);
+            await userRepository.Insert(emailsInsert, TableType.Unindexed);
+
+            var emailsIntersectionIndexed = await UserFilter.Filter(n, m, TableType.Indexed, userRepository, UserFilter.FetchingCached);
+            var emailsIntersectionUnindexed = await UserFilter.Filter(n, m, TableType.Unindexed, userRepository, UserFilter.FetchingCached);
+
+            await userContext.Database.EnsureDeletedAsync();
+        }
     }
 }

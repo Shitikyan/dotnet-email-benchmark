@@ -14,9 +14,9 @@
             File.AppendAllText(OutputPath, text);
         }
 
-        public static void BenchmarkLog(TableType tableType, int n, int m, TimeSpan time)
+        public static void BenchmarkLog(string algorithmName, TableType tableType, int n, int m, TimeSpan time)
         {
-            Append($"Fetching {tableType}: n = {n}, m = {m} --> Time: {time}\n");
+            Append($"{algorithmName} {tableType}: n = {n}, m = {m} --> Time: {time}\n");
         }
     }
 }

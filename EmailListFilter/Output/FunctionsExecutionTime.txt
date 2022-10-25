@@ -1,0 +1,16 @@
+Fetching Indexed: n = 1000000, m = 10 --> Time: 00:00:00.1904879
+Fetching Unindexed: n = 1000000, m = 10 --> Time: 00:00:00.4684724
+Fetching Indexed: n = 10000, m = 1000 --> Time: 00:00:00.0255622
+Fetching Unindexed: n = 10000, m = 1000 --> Time: 00:00:00.0258966
+Fetching Indexed: n = 10000, m = 10000 --> Time: 00:00:00.0461195
+Fetching Unindexed: n = 10000, m = 10000 --> Time: 00:00:00.0446708
+Fetching Indexed: n = 10, m = 100 --> Time: 00:00:00.0180667
+Fetching Unindexed: n = 10, m = 100 --> Time: 00:00:00.0172555
+Fetching Indexed: n = 1000, m = 100 --> Time: 00:00:00.0181117
+Fetching Unindexed: n = 1000, m = 100 --> Time: 00:00:00.0179514
+Fetching Indexed: n = 1000000, m = 100 --> Time: 00:00:00.0254523
+Fetching Unindexed: n = 1000000, m = 100 --> Time: 00:00:00.5266364
+Fetching Indexed: n = 1000000, m = 1000 --> Time: 00:00:00.0330901
+Fetching Unindexed: n = 1000000, m = 1000 --> Time: 00:00:00.6188993
+Fetching Indexed: n = 10000, m = 100 --> Time: 00:00:00.0189990
+Fetching Unindexed: n = 10000, m = 100 --> Time: 00:00:00.0242992
